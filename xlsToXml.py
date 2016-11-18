@@ -7,7 +7,7 @@ relations = open_workbook('relations.xls')
 sheet = relations.sheet_by_index(0)
 
 #Define o root do arquivo xml
-root = etree.Element('Relation')
+root = etree.Element('Ontology')
 #Comentario no xml
 comment1 = etree.Comment('Teste de criacao do XML')
 root.append(comment1)
@@ -15,21 +15,22 @@ root.append(comment1)
 #Adicionando as childs ou SubElementos do root
 #for mais externo percorre as linhas 
 #O for mais interno percorre todas as colunas adicionando cada celula como child do root do xml
-for j in range(sheet.nrows):
+for j in range(1,sheet.nrows): 
+	rel = etree.SubElement(root, 'Relation')
+	rel.set('id', str(j))
 	for i in range(sheet.ncols):
-		if (j+1 < sheet.nrows):
-			child = sheet.cell_value(0,i) #Fixo em 0 para criar as tags
-			child = etree.SubElement(root, child)
-			value = sheet.cell(j+1,i).value
-			if (isinstance(value, int) or isinstance(value,float)): 
-				#se for int ou float, basta converter para string
-				value = str(value)
-			else:
-				#em outro caso, eu indico qual codificacao
-				value.encode('utf8')
-			child.text = value 
-			#WARNING: temos um problema na codificacao de caracteres
-			#Percorre as linhas diferentes de zero, adicionando como informacao para cada tag previamente criada. 
+		child = sheet.cell_value(0,i) #Fixo em 0 para criar as tags
+		child = etree.SubElement(rel, child)
+		value = sheet.cell(j,i).value
+		if (isinstance(value, int) or isinstance(value,float)): 
+			#se for int ou float, basta converter para string
+			value = str(value)
+		else:
+			#em outro caso, eu indico qual codificacao
+			value.encode('utf8')
+		child.text = value 
+		#WARNING: temos um problema na codificacao de caracteres
+		#Percorre as linhas diferentes de zero, adicionando como informacao para cada tag previamente criada. 
 			
 		
 
