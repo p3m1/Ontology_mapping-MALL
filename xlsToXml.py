@@ -20,7 +20,14 @@ for j in range(sheet.nrows):
 		if (j+1 < sheet.nrows):
 			child = sheet.cell_value(0,i) #Fixo em 0 para criar as tags
 			child = etree.SubElement(root, child)
-			child.text = repr(sheet.cell(j+1,i).value) 
+			value = sheet.cell(j+1,i).value
+			if (isinstance(value, int) or isinstance(value,float)): 
+				#se for int ou float, basta converter para string
+				value = str(value)
+			else:
+				#em outro caso, eu indico qual codificacao
+				value.encode('utf8')
+			child.text = value 
 			#WARNING: temos um problema na codificacao de caracteres
 			#Percorre as linhas diferentes de zero, adicionando como informacao para cada tag previamente criada. 
 			
