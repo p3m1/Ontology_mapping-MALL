@@ -14,10 +14,13 @@ root.append(comment1)
 
 #Adicionando as childs ou SubElementos do root
 #O for percorre todas as colunas da primeira linha adicionando cada celula como child do root do xml
-for i in range(sheet.ncols):
-	child = sheet.cell_value(0,i)
-	child = etree.SubElement(root, child)
-	child.set('id', '100')
+for j in range(sheet.nrows):
+	for i in range(sheet.ncols):
+		child = sheet.cell_value(0,i)
+		child = etree.SubElement(root, child)
+		if (j+1 < sheet.nrows):
+			child.text = repr(sheet.cell(j+1,i).value)
+		
 
 #Coloca o root na arvore
 root_tree = etree.ElementTree(root)
@@ -30,5 +33,5 @@ for i in range(sheet.nrows):
 
 
 #Salva o arquivo xml
-outFile = open('homemade.xml', 'w')
+outFile = open('homemade_v2.xml', 'w')
 root_tree.write(outFile)
