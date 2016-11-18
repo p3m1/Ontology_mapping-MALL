@@ -13,23 +13,23 @@ comment1 = etree.Comment('Teste de criacao do XML')
 root.append(comment1)
 
 #Adicionando as childs ou SubElementos do root
-#O for percorre todas as colunas da primeira linha adicionando cada celula como child do root do xml
+#for mais externo percorre as linhas 
+#O for mais interno percorre todas as colunas adicionando cada celula como child do root do xml
 for j in range(sheet.nrows):
 	for i in range(sheet.ncols):
-		child = sheet.cell_value(0,i)
-		child = etree.SubElement(root, child)
 		if (j+1 < sheet.nrows):
-			child.text = repr(sheet.cell(j+1,i).value)
+			child = sheet.cell_value(0,i) #Fixo em 0 para criar as tags
+			child = etree.SubElement(root, child)
+			child.text = repr(sheet.cell(j+1,i).value) 
+			#WARNING: temos um problema na codificacao de caracteres
+			#Percorre as linhas diferentes de zero, adicionando como informacao para cada tag previamente criada. 
+			
 		
 
 #Coloca o root na arvore
 root_tree = etree.ElementTree(root)
 
 
-#Ainda nao faz merda nenhuma
-for i in range(sheet.nrows):
-	for j in range(sheet.ncols):
-		 sheet.cell_value(i,j)
 
 
 #Salva o arquivo xml
