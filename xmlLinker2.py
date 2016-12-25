@@ -20,10 +20,11 @@ root = tree.getroot()
 generalizations = {} # chave eh generalizacao de elementos na lista
 mutex = {}
 inverse = {}
-
+rel_index = -1
 
 #Exemplo de uso que pode ser util para nos
 for relation in ontology['Ontology']['Relations']['Relation']:
+	rel_index += 1
 	auxg = []
 	auxm = []
 	auxinv = []
@@ -33,7 +34,6 @@ for relation in ontology['Ontology']['Relations']['Relation']:
 
 
 	for relation2 in ontology['Ontology']['Relations']['Relation']:
-
 		for gen in str(relation2['generalizations']).split(): 	#looking for generalizations
 			if (relation['relationName'] == gen and relation['relationName'] != 'relatedTo'):
 				auxg.append(int(relation2['@id']))
@@ -45,7 +45,7 @@ for relation in ontology['Ontology']['Relations']['Relation']:
 				foundmut = True
 
 		for inv in str(relation2['inverse']).split():
-			if (relation['relationName'] == inv):
+			if (relation['relationName'] == inv):	#looking for inverses
 				auxinv.append(int(relation2['@id']))
 				foundinverse = True
 				
@@ -57,6 +57,13 @@ for relation in ontology['Ontology']['Relations']['Relation']:
 
 		if (foundinverse):
 			inverse[int(relation['@id'])] = auxinv
+
+	for category in ontology['Ontology']['Categories']['Category']: 	#looking for the categories in the category xls
+		if (category['categoryName'] == relation['domain']): 
+			aux = ET.SubElement(root[0][rel_index][5], 'categoryRef', {'id':category['@id']})
+		if (category['categoryName'] == relation['range']): 
+			aux = ET.SubElement(root[0][rel_index][6], 'categoryRef', {'id':category['@id']})
+
 
 
 for generalization, especializations in generalizations.items():	# coloca um relationRef onde tem uma generalizacao que eh relationName
