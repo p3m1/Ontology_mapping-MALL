@@ -6,13 +6,13 @@ from lxml import etree
 import xml.etree.ElementTree as ET
 
 #Open the xml file
-raw_xml = open('homemade_v2.xml',  'r')
+raw_xml = open('ontology.xml',  'r')
 
 #Converts the xml to a dict 
 ontology = xmltodict.parse(raw_xml)
 
 raw_xml.close()
-raw_xml = open('homemade_v2.xml',  'r')
+raw_xml = open('ontology.xml',  'r')
 
 tree = ET.parse(raw_xml)
 root = tree.getroot()
@@ -23,14 +23,16 @@ inverse = {}
 
 
 #Exemplo de uso que pode ser util para nos
-for relation in ontology['Ontology']['Relation']:
+for relation in ontology['Ontology']['Relations']['Relation']:
 	auxg = []
 	auxm = []
 	auxinv = []
 	foundgen = False
 	foundmut = False
 	foundinverse = False
-	for relation2 in ontology['Ontology']['Relation']:
+
+
+	for relation2 in ontology['Ontology']['Relations']['Relation']:
 
 		for gen in str(relation2['generalizations']).split(): 	#looking for generalizations
 			if (relation['relationName'] == gen and relation['relationName'] != 'relatedTo'):
@@ -58,20 +60,20 @@ for relation in ontology['Ontology']['Relation']:
 
 
 for generalization, especializations in generalizations.items():	# coloca um relationRef onde tem uma generalizacao que eh relationName
-	for relation in root: 
+	for relation in root[0]: 
 		for especialization in especializations: 
 			if (relation.attrib['id'] == str(especialization)):		# ele eh uma especializacao
 				aux = ET.SubElement(relation[4], 'relationRef', {'id':str(generalization)})
 
 
 for origin, mutexExceptions in mutex.items(): 
-	for relation in root: 
+	for relation in root[0]: 
 		for mutexException in mutexExceptions:
 			if (relation.attrib['id'] == str(mutexException)): 
 				aux = ET.SubElement(relation[11], 'relationRef', {'id':str(origin)})
 
 for origin, inverses in inverse.items(): 
-	for relation in root: 
+	for relation in root[0]: 
 		for inversex in inverses:
 			if (relation.attrib['id'] == str(inversex)): 
 				aux = ET.SubElement(relation[13], 'relationRef', {'id':str(origin)})
